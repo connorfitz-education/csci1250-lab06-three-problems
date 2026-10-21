@@ -111,8 +111,10 @@ do
     // Exercise 3 (Score Report)
     if (choice == 3 || choice == 4)
     {
-        int[] scores = new int[5];
+        
         System.Console.WriteLine("=== Exercise 3: The Score Report ===");
+        int numOfScores = UserInput("Please enter an amount of scores to check (MIN 1, MAX 20): ", "Please enter a VALID number of scores (1-20) to check:", 1, 20);
+        int[] scores = new int[numOfScores];
         //For loop because it repeats until every possible score in the score array is filled (when used like this)
         for(int i = 0; i < scores.Length; i++)
         {

@@ -25,15 +25,12 @@ do
     System.Console.WriteLine("4. All three");
     System.Console.WriteLine("5. Quit");
 
-    //Input system and check
-    System.Console.Write("Chose 1 through 5: ");
-    string? userInput = Console.ReadLine();
-    while(!userInput.All(char.IsDigit) || userInput == "" || Convert.ToInt32(userInput) > 5 || Convert.ToInt32(userInput) < 1)
+    // User Input System and Input Check
+    choice = UserInput("Choose 1 through 5");
+    while(choice < 1 || choice > 5)
     {
-        System.Console.Write("Chose a number 1 through 5: ");
-        userInput = Console.ReadLine();
+        choice = UserInput("Please choose a number 1 through 5");
     }
-    choice = Convert.ToInt32(userInput);
     System.Console.Write("\n");
 
     
@@ -41,6 +38,33 @@ do
     if (choice == 1 || choice == 4)
     {
         // Exercise 1
+        System.Console.WriteLine("=== Exercise 1: The Grade Checker ===");
+        int score = UserInput("Score");
+        while(score < 0 || score > 100)
+        {
+            System.Console.WriteLine("A score must be between 0 and 100.");
+            score = UserInput("Score");
+        }
+        if(score < 60)
+        {
+            System.Console.WriteLine($"{score} earns an F.\n");
+        }
+        else if(score >= 60 && score < 70)
+        {
+            System.Console.WriteLine($"{score} earns an D.\n");
+        }
+        else if(score >= 70 && score < 80)
+        {
+            System.Console.WriteLine($"{score} earns a C.\n");
+        }
+        else if(score >= 80 && score < 90)
+        {
+            System.Console.WriteLine($"{score} earns a B.\n");
+        }
+        else if(score >= 90)
+        {
+            System.Console.WriteLine($"{score} earns an A.\n");
+        }
     }
     if (choice == 2 || choice == 4)
     {
@@ -57,3 +81,13 @@ do
 
 System.Console.WriteLine("Goodbye!");
 
+static int UserInput(string inputMessage)
+{
+    Console.Write($"{inputMessage}: ");
+    string userInput = Console.ReadLine();
+    if(userInput == "" || !userInput.All(char.IsDigit))
+    {
+        userInput = "-1";
+    }
+    return Convert.ToInt32(userInput);
+}

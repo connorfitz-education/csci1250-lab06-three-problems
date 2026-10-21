@@ -8,6 +8,8 @@
  * practices decisions and one of the four loops.
  */
 
+using System.Numerics;
+
 int choice = 0;
 Random rng = new Random(4000);
 
@@ -27,15 +29,7 @@ do
     System.Console.WriteLine("5. Quit");
 
     // User input
-    choice = UserInput("Choose 1 through 5");
-
-    // User Input Check. 
-    // While loop so that the user is prompted after every invalid input, only if the first input was invalid.
-    // this loop choice was also made so that an alternate message prints
-    while(choice < 1 || choice > 5)
-    {
-        choice = UserInput("Please choose a number 1 through 5");
-    }
+    choice = UserInput("Choose 1 through 5", "Choose a number 1 through 5", 1, 5);
 
     // Blank space for aesthetics
     System.Console.Write("\n");
@@ -48,15 +42,7 @@ do
         System.Console.WriteLine("=== Exercise 1: The Grade Checker ===");
         
         //User Score Input and validation
-        int score = UserInput("Score");
-
-        // While score is anything other than an integer 0-100, re-prompt to input a number 0-100
-        // Loop choice reasoning on lines 33 & 34
-        while(score < 0 || score > 100)
-        {
-            System.Console.WriteLine("A score must be a whole number between 0 and 100.");
-            score = UserInput("Score");
-        }
+        int score = UserInput("Score", "A score must be a whole number between 0 and 100.\nScore", 0, 100);
 
         //Output letter grade based on score
         ScoreCheck(score);     
@@ -106,15 +92,7 @@ do
             }
 
             //User input
-            System.Console.Write("Roll again? ([Y]es/[N]o): ");
-            char rollAgain = Console.ReadLine().ToUpper()[0];
-            // Check if input begins with Y for yes or N for no and repeat question if either is false
-            // Loop choice reasoning on line 33
-            while(rollAgain != 'Y' && rollAgain != 'N')
-            {
-                Console.Write("Invalid input. Roll again? ([Y]es/[N]o): ");
-                rollAgain = Console.ReadLine().ToUpper()[0];
-            }
+            char rollAgain = CharUserInput();
             // Output based on input
             if(rollAgain == 'N')
             {
@@ -130,17 +108,47 @@ do
 
     }
     
-    // Exercise 3
+    // Exercise 3 (Score Report)
     if (choice == 3 || choice == 4)
     {
-        
+        int[] scores = new int[5];
+        System.Console.WriteLine("=== Exercise 3: The Score Report ===");
+        //For loop because it repeats until every possible score in the score array is filled (when used like this)
+        for(int i = 0; i < scores.Length; i++)
+        {
+            scores[i] = UserInput($"Score {i+1}", $"A score must be a whole number between 0 and 100.\nScore {i+1}", 0, 100);
+        }
+        int highest = scores[0];
+        int total = 0;
+        int passing = 0;
+        foreach(int score in scores)
+        {
+            total += score;
+            if(score > highest)
+            {
+                highest = score;
+            }
+            if(score > 60)
+            {
+                ++passing;
+            }
+
+        }
+        double avg = (double)total/scores.Length;
+
+        System.Console.WriteLine($"\nScores entered: {scores.Length}");
+        System.Console.WriteLine($"Total: {total}");
+        System.Console.WriteLine($"Average: {avg:F1}");
+        System.Console.WriteLine($"Highest: {highest}");
+        System.Console.WriteLine($"Passing {passing} of {scores.Length}\n");
+
     }
 
 
 
 }while(choice != 5);
 
-System.Console.WriteLine("Goodbye!");
+System.Console.WriteLine("Goodbye.");
 
 static void DiceGameCheck(int rollNumber, int wins)
 {
@@ -173,15 +181,36 @@ static void DiceGameCheck(int rollNumber, int wins)
     }
 }
 
-static int UserInput(string inputMessage)
+static int UserInput(string inputMessage, string errorMessage, int rangeMin, int rangeMax)
 {
     Console.Write($"{inputMessage}: ");
     string userInput = Console.ReadLine();
-    if(userInput == "" || !userInput.All(char.IsDigit))
+    
+    // While loop so that it only runs if necessary, repeats forever until valid input is entered
+    // chosen over do while loop so that the input can contain a different message than the initial input message
+
+    while(userInput == "" || !userInput.All(char.IsDigit) || Convert.ToInt32(userInput) < rangeMin || Convert.ToInt32(userInput) > rangeMax)
     {
-        userInput = "-1";
+        System.Console.Write($"{errorMessage}: ");
+        userInput = Console.ReadLine();
     }
     return Convert.ToInt32(userInput);
+}
+
+static char CharUserInput()
+{
+    System.Console.Write("Roll again? ([Y]es/[N]o): ");
+    char rollAgain = Console.ReadLine().ToUpper()[0];
+    
+    // Check if input begins with Y for yes or N for no and repeat question if either is fals
+    // While loop so that it only runs if necessary, repeats forever until valid input is entered
+    // chosen over do while loop so that the input can contain a different message than the initial input message
+    while(rollAgain != 'Y' && rollAgain != 'N')
+    {
+        Console.Write("Invalid input. Roll again? ([Y]es/[N]o): ");
+        rollAgain = Console.ReadLine().ToUpper()[0];
+    }
+    return rollAgain;
 }
 
 static void ScoreCheck(int score)
